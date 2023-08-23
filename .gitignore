@@ -48,3 +48,25 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Custom files and extensions
+*.iws
+workspace.xml
+task.xml
+.DS_Store
+.vscode/launch.json
+.vscode/tasks.json
+*.cache
+*.dll
+*.exe
+
+/build/
+_ReSharper.*/
+*.tlog
+Version.cs
+Version.h
+Version.cpp
+_ReSharper.*
+bin
+obj
+packages
+.idea
