@@ -9,6 +9,7 @@
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="Quartz.Extensions.Hosting" Version="3.7.0" />
+      <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.200.23" />
     </ItemGroup>
 
 </Project>
