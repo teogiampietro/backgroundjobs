@@ -1,9 +1,9 @@
-using BackgroundJobs.Infrastructure.Model;
+using BackgroundJobs.Service.Model;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Spi;
 
-namespace BackgroundJobs.Infrastructure.Service;
+namespace BackgroundJobs.Service.Quartz;
 
 public class QuartzHostedService : IHostedService
 {

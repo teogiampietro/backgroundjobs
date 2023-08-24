@@ -1,6 +1,6 @@
 using Quartz;
 
-namespace BackgroundJobs.Infrastructure.Model;
+namespace BackgroundJobs.Service.Model;
 
 public static class JobLogger 
 {

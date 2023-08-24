@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\BackgroundJobs.Infrastructure\BackgroundJobs.Infrastructure.csproj" />
+      <ProjectReference Include="..\BackgroundJobs.Service\BackgroundJobs.Service.csproj" />
     </ItemGroup>
 
 </Project>
