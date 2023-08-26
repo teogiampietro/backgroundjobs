@@ -1,4 +1,4 @@
-﻿namespace BackgroundJobs.Service.Model;
+﻿namespace BackgroundJobs.Service.Messages;
 
 public class JobResultMessage
 {
