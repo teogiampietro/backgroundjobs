@@ -5,42 +5,40 @@ using Quartz.Spi;
 
 namespace BackgroundJobs.Service.Quartz;
 
-public class QuartzHostedService : IHostedService
+public class QuartzHostedService : BackgroundService
 {
     private readonly ISchedulerFactory _schedulerFactory;
     private readonly IJobFactory _jobFactory;
-    private readonly IEnumerable<MyJob> _myJobs;
+    private IScheduler Scheduler { get; set; }
 
     public QuartzHostedService(
         ISchedulerFactory schedulerFactory,
-        IJobFactory jobFactory,
-        IEnumerable<MyJob> myJobs)
+        IJobFactory jobFactory)
     {
         _schedulerFactory = schedulerFactory;
         _jobFactory = jobFactory;
-        _myJobs = myJobs;
     }
 
-    private IScheduler Scheduler { get; set; }
-
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         Scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
         Scheduler.JobFactory = _jobFactory;
-        foreach (var myJob in _myJobs)
-        {
-            var job = CreateJob(myJob);
-            var trigger = CreateTrigger(myJob);
-            await Scheduler.ScheduleJob(job, trigger, cancellationToken);
-        }
-
         await Scheduler.Start(cancellationToken);
     }
-
+    
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         await Scheduler?.Shutdown(cancellationToken);
     }
+
+    public async Task AddJobToScheduler(CancellationToken cancellationToken, MyJob myJob)
+    {
+        var job = CreateJob(myJob);
+        var trigger = CreateTrigger(myJob);
+        JobLogger.LogMyJob(myJob);
+        await Scheduler.ScheduleJob(job, trigger, cancellationToken);
+    }
+
 
     private static IJobDetail CreateJob(MyJob myJob)
     {

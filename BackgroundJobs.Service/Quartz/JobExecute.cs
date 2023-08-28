@@ -9,7 +9,7 @@ public class JobExecute : IJob
     public async Task Execute(IJobExecutionContext context)
     {
         // Do something: log data, call a Lambda, HTTP request, etc.
-        JobLogger.Log(context);
+        JobLogger.LogContextJob(context);
 
         await SnsResultsPublisherService.Publish(context);
     }
