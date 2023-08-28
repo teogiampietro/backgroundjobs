@@ -5,7 +5,7 @@ using Quartz.Spi;
 
 namespace BackgroundJobs.Service.Quartz;
 
-public class QuartzHostedService : BackgroundService
+public class QuartzHostedService : BackgroundService, IQuartzService
 {
     private readonly ISchedulerFactory _schedulerFactory;
     private readonly IJobFactory _jobFactory;
@@ -38,7 +38,6 @@ public class QuartzHostedService : BackgroundService
         JobLogger.LogMyJob(myJob);
         await Scheduler.ScheduleJob(job, trigger, cancellationToken);
     }
-
 
     private static IJobDetail CreateJob(MyJob myJob)
     {

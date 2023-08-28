@@ -15,7 +15,7 @@ public static class DependencyInjection
 {
     public static void AddBackgroundServices(this IServiceCollection services)
     {
-        //services.AddHostedService<Quartz.QuartzHostedService>();
+        services.AddSingleton<IQuartzService, Quartz.QuartzHostedService>();
         services.AddSingleton<IJobFactory, SingletonJobFactory>();
         services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 

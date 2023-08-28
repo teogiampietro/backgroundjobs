@@ -10,16 +10,16 @@ namespace BackgroundJobs.Service.Consumer;
 public class SqsConsumerService : BackgroundService
 {
     private readonly IAmazonSQS _sqs;
+    private readonly IQuartzService _quartzService;
 
-    public SqsConsumerService(IAmazonSQS sqs, QuartzHostedService quartzHostedService)
+    public SqsConsumerService(IAmazonSQS sqs, IQuartzService quartzService)
     {
         _sqs = sqs;
-        _quartzHostedService = quartzHostedService;
+        _quartzService = quartzService;
     }
-
+    
     private const string QueueName = "background-jobs-requests-queue";
     private readonly List<string> _messageAttributeNames = new() { "All" };
-    private readonly QuartzHostedService _quartzHostedService;
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -59,7 +59,7 @@ public class SqsConsumerService : BackgroundService
 
     private void ToScheduler(MyJob myJob, CancellationToken cancellationToken)
     {
-        _quartzHostedService.AddJobToScheduler(cancellationToken, myJob);
+        _quartzService.AddJobToScheduler(cancellationToken, myJob);
     }
 
     private void RemoveMessageFromQueue(CancellationToken cancellationToken, GetQueueUrlResponse queueUrl,
