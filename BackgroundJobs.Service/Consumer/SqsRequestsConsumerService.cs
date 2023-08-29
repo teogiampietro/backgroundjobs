@@ -1,7 +1,8 @@
 using System.Net;
+using System.Text.Json;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using BackgroundJobs.Service.Model;
+using BackgroundJobs.Service.Messages;
 using BackgroundJobs.Service.Quartz;
 using Microsoft.Extensions.Hosting;
 
@@ -44,19 +45,21 @@ public class SqsRequestsConsumerService : BackgroundService
             foreach (var message in receiveMessageResponse.Messages)
             {
                 // TODO: Create the job from the request and add it to the scheduler.
-                var myJob = new MyJob(
-                    type: typeof(JobExecute),
-                    cronExpression: "0/15 0/1 * 1/1 * ? *",
-                    resource: "https://aws.lambdaexampleurl.com",
-                    priority: 1);
-                
-                await _quartzService.AddJobToScheduler(myJob, cancellationToken);
+                var jobRequestMessage = new JobRequestMessage
+                {
+                    Id = Guid.NewGuid(),
+                    Type = typeof(LoggingJob),
+                    ResultsTopic = "background-jobs-results-topic",
+                    Priority = 3
+                };
+
+                await _quartzService.AddJobToScheduler(jobRequestMessage, cancellationToken);
                 
                 // TODO: Verify the job was correctly scheduled and delete the message.
                 if (false)
                     await _sqs.DeleteMessageAsync(getQueueUrlResponse.QueueUrl, message.ReceiptHandle, cancellationToken);
                 
-                Console.WriteLine("Request received.");
+                Console.WriteLine($"Request for job {jobRequestMessage.Id} received from {QueueName}.");
             }
         }
     }

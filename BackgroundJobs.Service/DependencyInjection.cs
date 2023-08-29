@@ -1,7 +1,6 @@
 using Amazon;
 using Amazon.SQS;
 using BackgroundJobs.Service.Consumer;
-using BackgroundJobs.Service.Model;
 using BackgroundJobs.Service.Quartz;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,7 +22,8 @@ public static class DependencyInjection
         services.AddSingleton<IQuartzService>(p => p.GetRequiredService<Quartz.QuartzHostedService>());
         services.AddSingleton<IHostedService>(p => p.GetRequiredService<Quartz.QuartzHostedService>());
 
-        services.AddSingleton<JobExecute>();
+        // Ad job types as a singleton.
+        services.AddSingleton<LoggingJob>();
 
         services.AddHostedService<SqsRequestsConsumerService>();
         services.AddSingleton<IAmazonSQS>(_ => new AmazonSQSClient(RegionEndpoint.SAEast1));

@@ -8,27 +8,32 @@ namespace BackgroundJobs.Service.Publisher;
 
 public static class SnsResultsPublisherService
 {
-    private static readonly string topicName = "background-jobs-results-topic";
-
     public static async Task Publish(IJobExecutionContext context) {
-        string jobKey = context.JobDetail.Key.ToString();
+        var jobId = context.JobDetail.Key.Name;
+        
+        var jobDataMap = context.MergedJobDataMap;
 
-        JobResultMessage resultMessage = new()
+        var topicName = jobDataMap.GetString("ResultsTopic")!;
+
+        var jobResultMessage = new JobResultMessage
         {
-            JobKey = jobKey,
-            Status = "OK"
+            Id = Guid.Parse(jobId),
+            Status = "OK",
+            StatusMessage = "Job was executed successfully."
         };
 
-        AmazonSimpleNotificationServiceClient snsClient = new();
+        var snsClient = new AmazonSimpleNotificationServiceClient();
 
-        Topic topicArnResponse = await snsClient.FindTopicAsync(topicName);
-
-        PublishRequest publishRequest = new()
+        var topic = await snsClient.FindTopicAsync(topicName);
+        
+        var publishRequest = new PublishRequest
         {
-            TopicArn = topicArnResponse.TopicArn,
-            Message = JsonSerializer.Serialize(resultMessage)
+            TopicArn = topic.TopicArn,
+            Message = JsonSerializer.Serialize(jobResultMessage)
         };
 
         await snsClient.PublishAsync(publishRequest);
+        
+        await Console.Out.WriteLineAsync($"Results for job {context.JobDetail.Key.Name} were published on {topicName}.");
     }
 }

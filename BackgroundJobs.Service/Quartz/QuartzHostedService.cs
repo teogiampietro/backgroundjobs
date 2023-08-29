@@ -1,4 +1,4 @@
-using BackgroundJobs.Service.Model;
+using BackgroundJobs.Service.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Spi;
@@ -34,31 +34,41 @@ public class QuartzHostedService : BackgroundService, IQuartzService
             await Scheduler.Shutdown(cancellationToken);
     }
 
-    public async Task AddJobToScheduler(MyJob myJob, CancellationToken cancellationToken)
+    public async Task AddJobToScheduler(IJobRequest jobRequest, CancellationToken cancellationToken)
     {
-        var job = CreateJob(myJob);
-        var trigger = CreateTrigger(myJob);
-        
+        var jobDetail = CreateJobDetail(jobRequest);
+        var trigger = CreateTrigger(jobRequest);
+
         if (Scheduler is not null)
-            await Scheduler.ScheduleJob(job, trigger, cancellationToken);
+            await Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken);
     }
 
-    private static IJobDetail CreateJob(MyJob myJob)
+    private static IJobDetail CreateJobDetail(IJobRequest jobRequest)
     {
-        return JobBuilder.Create(myJob.Type)
-            .WithIdentity("name", "group")
-            // .WithDescription(myJob.Resource)
+        return JobBuilder.Create(jobRequest.Type)
+            .WithIdentity(jobRequest.Id.ToString(), jobRequest.Type.Namespace!)
+            .UsingJobData("ResultsTopic", jobRequest.ResultsTopic)
             .Build();
     }
 
-    private static ITrigger CreateTrigger(MyJob myJob)
+    private static ITrigger CreateTrigger(IJobRequest jobRequest)
     {
-        return TriggerBuilder.Create()
-            .WithIdentity("triggerName", "group")
-            // .WithDescription(myJob.CronExpression)
-            // .WithCronSchedule(myJob.CronExpression)
-            // .WithPriority(myJob.Priority)
-            .StartNow()
-            .Build();
+        var triggerBuilder = TriggerBuilder.Create()
+            .WithIdentity($"{jobRequest.Id.ToString()}.trigger", jobRequest.Type.Namespace!)
+            .WithPriority(jobRequest.Priority);
+        
+        if (jobRequest.CronExpression is null)
+        {
+            triggerBuilder = triggerBuilder
+                .StartNow();
+        }
+        else
+        {
+            triggerBuilder = triggerBuilder
+                .WithCronSchedule(jobRequest.CronExpression)
+                .WithDescription(jobRequest.CronExpression);
+        }
+        
+        return triggerBuilder.Build();
     }
 }
