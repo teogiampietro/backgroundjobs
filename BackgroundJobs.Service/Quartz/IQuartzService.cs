@@ -1,4 +1,5 @@
 using BackgroundJobs.Service.Interfaces;
+using BackgroundJobs.Service.Model;
 
 namespace BackgroundJobs.Service.Quartz;
 

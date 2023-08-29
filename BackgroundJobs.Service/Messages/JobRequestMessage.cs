@@ -1,12 +1,13 @@
+using System.Security;
 using BackgroundJobs.Service.Interfaces;
 
 namespace BackgroundJobs.Service.Messages;
 
-public class JobRequestMessage : IJobRequest
+public class JobRequestMessage
 {
     public Guid Id { get; init; }
-    public required Type Type { get; init; }
+    public required string Type { get; set; }
     public required string ResultsTopic { get; init; }
     public string? CronExpression { get; init; }
-    public int Priority { get; init; } = 5;
+    public int Priority { get; init; }
 }

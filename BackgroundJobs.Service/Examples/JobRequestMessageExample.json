@@ -1,0 +1,6 @@
+{
+  "Id": "67c8fa3a-5694-47e3-b445-8e19bd678f8f",
+  "Type": "LoggingJob",
+  "ResultsTopic": "background-jobs-results-topic",
+  "Priority": 3
+}

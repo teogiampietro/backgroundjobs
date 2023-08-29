@@ -3,6 +3,7 @@ using System.Text.Json;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using BackgroundJobs.Service.Messages;
+using BackgroundJobs.Service.Model;
 using BackgroundJobs.Service.Quartz;
 using Microsoft.Extensions.Hosting;
 
@@ -38,28 +39,29 @@ public class SqsRequestsConsumerService : BackgroundService
             var receiveMessageResponse = await _sqs.ReceiveMessageAsync(receiveMessageRequest, cancellationToken);
             if (receiveMessageResponse.HttpStatusCode != HttpStatusCode.OK)
             {
-                // TODO: Do some logging or handling
+                // TODO: Do some logging or handling.
                 continue;
             }
 
             foreach (var message in receiveMessageResponse.Messages)
             {
-                // TODO: Create the job from the request and add it to the scheduler.
-                var jobRequestMessage = new JobRequestMessage
+                
+                var jobRequestMessage = JsonSerializer.Deserialize<JobRequestMessage>(message.Body)!;
+                var jobRequest = new JobRequest
                 {
-                    Id = Guid.NewGuid(),
-                    Type = typeof(LoggingJob),
-                    ResultsTopic = "background-jobs-results-topic",
-                    Priority = 3
+                    Id = jobRequestMessage.Id,
+                    Type = Type.GetType($"BackgroundJobs.Service.Quartz.{jobRequestMessage.Type}")!,
+                    ResultsTopic = jobRequestMessage.ResultsTopic,
+                    CronExpression = jobRequestMessage.CronExpression,
+                    Priority = jobRequestMessage.Priority
                 };
 
-                await _quartzService.AddJobToScheduler(jobRequestMessage, cancellationToken);
+                Console.WriteLine($"Request for job {jobRequest.Id} was received from {QueueName}.");
                 
-                // TODO: Verify the job was correctly scheduled and delete the message.
-                if (false)
-                    await _sqs.DeleteMessageAsync(getQueueUrlResponse.QueueUrl, message.ReceiptHandle, cancellationToken);
+                await _quartzService.AddJobToScheduler(jobRequest, cancellationToken);
                 
-                Console.WriteLine($"Request for job {jobRequestMessage.Id} received from {QueueName}.");
+                await _sqs.DeleteMessageAsync(getQueueUrlResponse.QueueUrl, message.ReceiptHandle, cancellationToken);
+                
             }
         }
     }

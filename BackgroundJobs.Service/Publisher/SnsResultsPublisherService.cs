@@ -19,7 +19,7 @@ public static class SnsResultsPublisherService
         {
             Id = Guid.Parse(jobId),
             Status = "OK",
-            StatusMessage = "Job was executed successfully."
+            StatusMessage = "Job was successfully executed."
         };
 
         var snsClient = new AmazonSimpleNotificationServiceClient();
