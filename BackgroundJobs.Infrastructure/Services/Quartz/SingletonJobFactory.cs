@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Spi;
 
-namespace BackgroundJobs.Service.Quartz;
+namespace BackgroundJobs.Infrastructure.Services.Quartz;
 
 public class SingletonJobFactory : IJobFactory
 {

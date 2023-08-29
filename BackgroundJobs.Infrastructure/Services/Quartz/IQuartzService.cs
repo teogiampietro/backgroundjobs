@@ -1,7 +1,6 @@
-using BackgroundJobs.Service.Interfaces;
-using BackgroundJobs.Service.Model;
+using BackgroundJobs.Infrastructure.Interfaces;
 
-namespace BackgroundJobs.Service.Quartz;
+namespace BackgroundJobs.Infrastructure.Services.Quartz;
 
 public interface IQuartzService
 {

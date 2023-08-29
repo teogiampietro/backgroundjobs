@@ -1,10 +1,10 @@
-﻿using Amazon.SimpleNotificationService;
+﻿using System.Text.Json;
+using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
-using BackgroundJobs.Service.Messages;
+using BackgroundJobs.Infrastructure.Messages;
 using Quartz;
-using System.Text.Json;
 
-namespace BackgroundJobs.Service.Publisher;
+namespace BackgroundJobs.Infrastructure.Services.Publishers;
 
 public static class SnsResultsPublisherService
 {

@@ -2,12 +2,12 @@ using System.Net;
 using System.Text.Json;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using BackgroundJobs.Service.Messages;
-using BackgroundJobs.Service.Model;
-using BackgroundJobs.Service.Quartz;
+using BackgroundJobs.Infrastructure.Messages;
+using BackgroundJobs.Infrastructure.Model;
+using BackgroundJobs.Infrastructure.Services.Quartz;
 using Microsoft.Extensions.Hosting;
 
-namespace BackgroundJobs.Service.Consumer;
+namespace BackgroundJobs.Infrastructure.Services.Consumers;
 
 public class SqsRequestsConsumerService : BackgroundService
 {
@@ -50,7 +50,7 @@ public class SqsRequestsConsumerService : BackgroundService
                 var jobRequest = new JobRequest
                 {
                     Id = jobRequestMessage.Id,
-                    Type = Type.GetType($"BackgroundJobs.Service.Quartz.{jobRequestMessage.Type}")!,
+                    Type = Type.GetType($"BackgroundJobs.Infrastructure.Jobs.{jobRequestMessage.Type}")!,
                     ResultsTopic = jobRequestMessage.ResultsTopic,
                     CronExpression = jobRequestMessage.CronExpression,
                     Priority = jobRequestMessage.Priority

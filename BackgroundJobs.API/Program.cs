@@ -1,4 +1,4 @@
-using BackgroundJobs.Service;
+using BackgroundJobs.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

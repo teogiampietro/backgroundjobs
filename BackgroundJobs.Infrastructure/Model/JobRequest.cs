@@ -1,7 +1,6 @@
-using BackgroundJobs.Service.Interfaces;
-using BackgroundJobs.Service.Messages;
+using BackgroundJobs.Infrastructure.Interfaces;
 
-namespace BackgroundJobs.Service.Model;
+namespace BackgroundJobs.Infrastructure.Model;
 
 public class JobRequest : IJobRequest
 {

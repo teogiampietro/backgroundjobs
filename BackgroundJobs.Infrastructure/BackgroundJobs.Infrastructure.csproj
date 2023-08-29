@@ -21,6 +21,6 @@
       <None Remove="Messages\" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Publisher\" />
+      <Folder Include="Services\" />
     </ItemGroup>
 </Project>

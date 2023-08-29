@@ -1,7 +1,4 @@
-using System.Security;
-using BackgroundJobs.Service.Interfaces;
-
-namespace BackgroundJobs.Service.Messages;
+namespace BackgroundJobs.Infrastructure.Messages;
 
 public class JobRequestMessage
 {

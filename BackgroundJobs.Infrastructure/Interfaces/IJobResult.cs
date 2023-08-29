@@ -1,4 +1,4 @@
-namespace BackgroundJobs.Service.Interfaces;
+namespace BackgroundJobs.Infrastructure.Interfaces;
 
 public interface IJobResult
 {

@@ -1,7 +1,7 @@
-using BackgroundJobs.Service.Publisher;
+using BackgroundJobs.Infrastructure.Services.Publishers;
 using Quartz;
 
-namespace BackgroundJobs.Service.Quartz;
+namespace BackgroundJobs.Infrastructure.Jobs;
 
 public class LoggingJob : IJob
 {
