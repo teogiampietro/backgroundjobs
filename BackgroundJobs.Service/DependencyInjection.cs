@@ -4,6 +4,7 @@ using BackgroundJobs.Service.Consumer;
 using BackgroundJobs.Service.Model;
 using BackgroundJobs.Service.Quartz;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
@@ -15,21 +16,16 @@ public static class DependencyInjection
 {
     public static void AddBackgroundServices(this IServiceCollection services)
     {
-        services.AddSingleton<IQuartzService, Quartz.QuartzHostedService>();
         services.AddSingleton<IJobFactory, SingletonJobFactory>();
         services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+        
+        services.AddSingleton<Quartz.QuartzHostedService>();
+        services.AddSingleton<IQuartzService>(p => p.GetRequiredService<Quartz.QuartzHostedService>());
+        services.AddSingleton<IHostedService>(p => p.GetRequiredService<Quartz.QuartzHostedService>());
 
-        //services.AddQuartz(options => options.UseMicrosoftDependencyInjectionJobFactory());
-        //services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
         services.AddSingleton<JobExecute>();
 
-        // services.AddSingleton(new MyJob(
-        //     type: typeof(JobExecute),
-        //     cronExpression: "0/15 0/1 * 1/1 * ? *",
-        //     resource: "https://aws.lambdaexampleurl.com",
-        //     priority: 1));
-
-        services.AddHostedService<SqsConsumerService>();
+        services.AddHostedService<SqsRequestsConsumerService>();
         services.AddSingleton<IAmazonSQS>(_ => new AmazonSQSClient(RegionEndpoint.SAEast1));
     }
 }

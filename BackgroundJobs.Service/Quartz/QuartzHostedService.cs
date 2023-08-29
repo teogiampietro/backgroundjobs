@@ -9,7 +9,6 @@ public class QuartzHostedService : BackgroundService, IQuartzService
 {
     private readonly ISchedulerFactory _schedulerFactory;
     private readonly IJobFactory _jobFactory;
-    private IScheduler Scheduler { get; set; }
 
     public QuartzHostedService(
         ISchedulerFactory schedulerFactory,
@@ -18,42 +17,48 @@ public class QuartzHostedService : BackgroundService, IQuartzService
         _schedulerFactory = schedulerFactory;
         _jobFactory = jobFactory;
     }
+    
+    private IScheduler? Scheduler { get; set; }
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         Scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
         Scheduler.JobFactory = _jobFactory;
+        
         await Scheduler.Start(cancellationToken);
     }
     
-    public async Task StopAsync(CancellationToken cancellationToken)
+    public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        await Scheduler?.Shutdown(cancellationToken);
+        if (Scheduler is not null)
+            await Scheduler.Shutdown(cancellationToken);
     }
 
-    public async Task AddJobToScheduler(CancellationToken cancellationToken, MyJob myJob)
+    public async Task AddJobToScheduler(MyJob myJob, CancellationToken cancellationToken)
     {
         var job = CreateJob(myJob);
         var trigger = CreateTrigger(myJob);
-        JobLogger.LogMyJob(myJob);
-        await Scheduler.ScheduleJob(job, trigger, cancellationToken);
+        
+        if (Scheduler is not null)
+            await Scheduler.ScheduleJob(job, trigger, cancellationToken);
     }
 
     private static IJobDetail CreateJob(MyJob myJob)
     {
         return JobBuilder.Create(myJob.Type)
-            .WithIdentity(myJob.Type.FullName, myJob.Type.Namespace)
-            .WithDescription(myJob.Resource)
+            .WithIdentity("name", "group")
+            // .WithDescription(myJob.Resource)
             .Build();
     }
 
     private static ITrigger CreateTrigger(MyJob myJob)
     {
         return TriggerBuilder.Create()
-            .WithIdentity($"{myJob.Type.FullName}.trigger", myJob.Type.Namespace)
-            .WithDescription(myJob.CronExpression)
-            .WithCronSchedule(myJob.CronExpression)
-            .WithPriority(myJob.Priority)
+            .WithIdentity("triggerName", "group")
+            // .WithDescription(myJob.CronExpression)
+            // .WithCronSchedule(myJob.CronExpression)
+            // .WithPriority(myJob.Priority)
+            .StartNow()
             .Build();
     }
 }
