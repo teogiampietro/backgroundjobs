@@ -16,11 +16,11 @@ public static class SnsResultsPublisherService
         var topicName = jobDataMap.GetString("ResultsTopic")!;
 
         var jobResultMessage = new JobResultMessage
-        {
-            Id = Guid.Parse(jobId),
-            Status = "OK",
-            StatusMessage = "Job was successfully executed."
-        };
+        (
+            Guid.Parse(jobId),
+            "OK",
+            "Job was successfully executed."
+        );
 
         var snsClient = new AmazonSimpleNotificationServiceClient();
 
