@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Spi;
 
-namespace BackgroundJobs.Service.Quartz;
+namespace BackgroundJobs.Infrastructure.Services.Quartz;
 
 public class SingletonJobFactory : IJobFactory
 {
@@ -15,7 +15,8 @@ public class SingletonJobFactory : IJobFactory
 
     public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
     {
-        return _serviceProvider.GetRequiredService(bundle.JobDetail.JobType) as IJob;
+        return _serviceProvider.GetRequiredService(bundle.JobDetail.JobType) as IJob
+               ?? throw new InvalidOperationException("This job type is not supported.");
     }
 
     public void ReturnJob(IJob job)

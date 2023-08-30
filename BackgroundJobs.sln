@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundJobs.API", "BackgroundJobs.API\BackgroundJobs.API.csproj", "{8BADC55F-D3E1-48B2-BAFD-B442A336D11E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundJobs.Service", "BackgroundJobs.Service\BackgroundJobs.Service.csproj", "{E0CAED04-5C63-420D-8EA1-097EA93F411D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundJobs.Infrastructure", "BackgroundJobs.Infrastructure\BackgroundJobs.Infrastructure.csproj", "{E0CAED04-5C63-420D-8EA1-097EA93F411D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
