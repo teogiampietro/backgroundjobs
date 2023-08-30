@@ -1,4 +1,5 @@
 using BackgroundJobs.Infrastructure;
+using BackgroundJobs.Infrastructure.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppConfig"));
 builder.Services.AddBackgroundServices();
 
 var app = builder.Build();
