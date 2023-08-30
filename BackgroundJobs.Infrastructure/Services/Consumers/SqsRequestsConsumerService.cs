@@ -6,6 +6,7 @@ using BackgroundJobs.Infrastructure.Messages;
 using BackgroundJobs.Infrastructure.Model;
 using BackgroundJobs.Infrastructure.Services.Quartz;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace BackgroundJobs.Infrastructure.Services.Consumers;
 
@@ -13,14 +14,18 @@ public class SqsRequestsConsumerService : BackgroundService
 {
     private readonly IAmazonSQS _sqs;
     private readonly IQuartzService _quartzService;
+    private readonly string QueueName;
 
-    public SqsRequestsConsumerService(IAmazonSQS sqs, IQuartzService quartzService)
+    public SqsRequestsConsumerService(
+        IAmazonSQS sqs,
+        IQuartzService quartzService,
+        IOptions<AppSettings> appSettings)
     {
         _sqs = sqs;
         _quartzService = quartzService;
+        QueueName = appSettings.Value.SQSQueueName;
     }
-    
-    private const string QueueName = "background-jobs-requests-queue";
+
     private readonly List<string> _messageAttributeNames = new() { "All" };
     private readonly List<string> _attributeNames = new() { "All" };
 
@@ -33,7 +38,7 @@ public class SqsRequestsConsumerService : BackgroundService
             MessageAttributeNames = _messageAttributeNames,
             AttributeNames = _attributeNames
         };
-        
+
         while (!cancellationToken.IsCancellationRequested)
         {
             var receiveMessageResponse = await _sqs.ReceiveMessageAsync(receiveMessageRequest, cancellationToken);
@@ -45,7 +50,6 @@ public class SqsRequestsConsumerService : BackgroundService
 
             foreach (var message in receiveMessageResponse.Messages)
             {
-                
                 var jobRequestMessage = JsonSerializer.Deserialize<JobRequestMessage>(message.Body)!;
                 var jobRequest = new JobRequest
                 {
@@ -57,11 +61,10 @@ public class SqsRequestsConsumerService : BackgroundService
                 };
 
                 Console.WriteLine($"Request for job {jobRequest.Id} was received from {QueueName}.");
-                
+
                 await _quartzService.AddJobToScheduler(jobRequest, cancellationToken);
-                
+
                 await _sqs.DeleteMessageAsync(getQueueUrlResponse.QueueUrl, message.ReceiptHandle, cancellationToken);
-                
             }
         }
     }
