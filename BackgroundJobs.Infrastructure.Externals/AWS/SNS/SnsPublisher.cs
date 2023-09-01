@@ -2,13 +2,15 @@
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using BackgroundJobs.Infrastructure.Messages;
+using BackgroundJobs.Infrastructure.Model;
+using BackgroundJobs.Infrastructure.Services.Publishers;
 using Quartz;
 
-namespace BackgroundJobs.Infrastructure.Services.Publishers;
+namespace BackgroundJobs.Infrastructure.Externals.AWS.SNS;
 
-public static class SnsResultsPublisherService
+public class SnsPublisher : IOutputResultPublisher
 {
-    public static async Task Publish(IJobExecutionContext context) {
+    public async Task Publish(IJobExecutionContext context) {
         var jobId = context.JobDetail.Key.Name;
         
         var jobDataMap = context.MergedJobDataMap;
@@ -18,8 +20,7 @@ public static class SnsResultsPublisherService
         var jobResultMessage = new JobResultMessage
         (
             Guid.Parse(jobId),
-            "OK",
-            "Job was successfully executed."
+            StatusResults.Ok
         );
 
         var snsClient = new AmazonSimpleNotificationServiceClient();

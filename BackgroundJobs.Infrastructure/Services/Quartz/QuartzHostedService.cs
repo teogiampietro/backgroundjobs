@@ -34,30 +34,30 @@ public class QuartzHostedService : BackgroundService, IQuartzService
             await Scheduler.Shutdown(cancellationToken);
     }
 
-    public async Task AddJobToScheduler(IJobRequest jobRequest, CancellationToken cancellationToken)
+    public async Task AddJobToScheduler(IJobRequestMessage jobRequestMessage, CancellationToken cancellationToken)
     {
-        var jobDetail = CreateJobDetail(jobRequest);
-        var trigger = CreateTrigger(jobRequest);
+        var jobDetail = CreateJobDetail(jobRequestMessage);
+        var trigger = CreateTrigger(jobRequestMessage);
 
         if (Scheduler is not null)
             await Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken);
     }
 
-    private static IJobDetail CreateJobDetail(IJobRequest jobRequest)
+    private static IJobDetail CreateJobDetail(IJobRequestMessage jobRequestMessage)
     {
-        return JobBuilder.Create(jobRequest.Type)
-            .WithIdentity(jobRequest.Id.ToString(), jobRequest.Type.Namespace!)
-            .UsingJobData("ResultsTopic", jobRequest.ResultsTopic)
+        return JobBuilder.Create(jobRequestMessage.Type)
+            .WithIdentity(jobRequestMessage.Id.ToString(), jobRequestMessage.Type.Namespace!)
+            .UsingJobData("ResultsTopic", jobRequestMessage.ResultsTopic)
             .Build();
     }
 
-    private static ITrigger CreateTrigger(IJobRequest jobRequest)
+    private static ITrigger CreateTrigger(IJobRequestMessage jobRequestMessage)
     {
         var triggerBuilder = TriggerBuilder.Create()
-            .WithIdentity($"{jobRequest.Id.ToString()}.trigger", jobRequest.Type.Namespace!)
-            .WithPriority(jobRequest.Priority);
+            .WithIdentity($"{jobRequestMessage.Id.ToString()}.trigger", jobRequestMessage.Type.Namespace!)
+            .WithPriority(jobRequestMessage.Priority);
         
-        if (jobRequest.CronExpression is null)
+        if (jobRequestMessage.CronExpression is null)
         {
             triggerBuilder = triggerBuilder
                 .StartNow();
@@ -65,8 +65,8 @@ public class QuartzHostedService : BackgroundService, IQuartzService
         else
         {
             triggerBuilder = triggerBuilder
-                .WithCronSchedule(jobRequest.CronExpression)
-                .WithDescription(jobRequest.CronExpression);
+                .WithCronSchedule(jobRequestMessage.CronExpression)
+                .WithDescription(jobRequestMessage.CronExpression);
         }
         
         return triggerBuilder.Build();

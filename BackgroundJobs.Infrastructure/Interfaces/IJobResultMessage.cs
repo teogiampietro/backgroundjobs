@@ -1,8 +1,10 @@
+using BackgroundJobs.Infrastructure.Model;
+
 namespace BackgroundJobs.Infrastructure.Interfaces;
 
-public interface IJobResult
+public interface IJobResultMessage
 {
     Guid Id { get; init; }
-    string Status { get; init; }
+    StatusResults Status { get; init; }
     string? StatusMessage { get; init; }
 }

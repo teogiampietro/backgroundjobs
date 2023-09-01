@@ -4,5 +4,5 @@ namespace BackgroundJobs.Infrastructure.Services.Quartz;
 
 public interface IQuartzService
 {
-    Task AddJobToScheduler(IJobRequest jobRequest, CancellationToken cancellationToken);
+    Task AddJobToScheduler(IJobRequestMessage jobRequestMessage, CancellationToken cancellationToken);
 }

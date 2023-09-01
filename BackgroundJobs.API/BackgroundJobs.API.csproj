@@ -20,7 +20,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\BackgroundJobs.Infrastructure.Externals\BackgroundJobs.Infrastructure.Externals.csproj" />
       <ProjectReference Include="..\BackgroundJobs.Infrastructure\BackgroundJobs.Infrastructure.csproj" />
     </ItemGroup>
+
 
 </Project>
