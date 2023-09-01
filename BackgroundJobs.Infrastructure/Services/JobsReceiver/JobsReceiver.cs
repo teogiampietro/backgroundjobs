@@ -2,13 +2,14 @@ using System.Net;
 using System.Text.Json;
 using BackgroundJobs.Infrastructure.Messages;
 using BackgroundJobs.Infrastructure.Model;
+using BackgroundJobs.Infrastructure.Services.Consumers;
 using BackgroundJobs.Infrastructure.Services.Quartz;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace BackgroundJobs.Infrastructure.Services.Consumers;
+namespace BackgroundJobs.Infrastructure.Services.JobsReceiver;
 
-public class MessagesReceiver : BackgroundService
+public class JobsReceiver : BackgroundService
 {
     private readonly IInputConsumer _inputConsumer;
     private readonly IQuartzService _quartzService;
@@ -17,7 +18,7 @@ public class MessagesReceiver : BackgroundService
     private readonly List<string> _messageAttributeNames = new() { "All" };
     private readonly List<string> _attributeNames = new() { "All" };
 
-    public MessagesReceiver(IInputConsumer inputConsumer, IQuartzService quartzService,
+    public JobsReceiver(IInputConsumer inputConsumer, IQuartzService quartzService,
         IOptions<AppSettings> appSettings)
     {
         _inputConsumer = inputConsumer;

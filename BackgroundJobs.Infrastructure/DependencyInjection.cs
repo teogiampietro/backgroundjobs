@@ -1,5 +1,5 @@
 using BackgroundJobs.Infrastructure.Jobs;
-using BackgroundJobs.Infrastructure.Services.Consumers;
+using BackgroundJobs.Infrastructure.Services.JobsReceiver;
 using BackgroundJobs.Infrastructure.Services.Quartz;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,7 +20,7 @@ public static class DependencyInjection
         services.AddSingleton<IQuartzService>(p => p.GetRequiredService<QuartzHostedService>());
         services.AddSingleton<IHostedService>(p => p.GetRequiredService<QuartzHostedService>());
 
-        services.AddHostedService<MessagesReceiver>();
+        services.AddHostedService<JobsReceiver>();
         // Add job types as a singleton.
         services.AddSingleton<LoggingJob>();
     }
