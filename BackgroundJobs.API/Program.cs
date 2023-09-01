@@ -1,4 +1,5 @@
 using BackgroundJobs.Infrastructure;
+using BackgroundJobs.Infrastructure.Externals.AWS;
 using BackgroundJobs.Infrastructure.Model;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppConfig"));
 builder.Services.AddBackgroundServices();
+builder.Services.AddAwsServices();
 
 var app = builder.Build();
 
