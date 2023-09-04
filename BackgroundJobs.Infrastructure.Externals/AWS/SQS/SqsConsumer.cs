@@ -1,8 +1,10 @@
 using System.Net;
+using Amazon;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using BackgroundJobs.Infrastructure.Model;
 using BackgroundJobs.Infrastructure.Services.Consumers;
+using Microsoft.Extensions.Options;
 using Message = BackgroundJobs.Infrastructure.Model.Message;
 
 namespace BackgroundJobs.Infrastructure.Externals.AWS.SQS;
@@ -11,9 +13,9 @@ public class SqsConsumer : IInputConsumer
 {
     private readonly IAmazonSQS _sqs;
 
-    public SqsConsumer(IAmazonSQS sqs)
+    public SqsConsumer(IOptions<AwsSettings> awsSettings)
     {
-        _sqs = sqs;
+        _sqs = new AmazonSQSClient(awsSettings.Value.AccessKeyId, awsSettings.Value.SecretAccessKey, RegionEndpoint.GetBySystemName(awsSettings.Value.Region));
     }
 
     public async Task<MessageResponse> ReceiveMessageAsync(MessageRequest request,
