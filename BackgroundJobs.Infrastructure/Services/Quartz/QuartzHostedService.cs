@@ -1,4 +1,4 @@
-using BackgroundJobs.Infrastructure.Interfaces;
+using BackgroundJobs.Infrastructure.Model;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Spi;
@@ -34,7 +34,7 @@ public class QuartzHostedService : BackgroundService, IQuartzService
             await Scheduler.Shutdown(cancellationToken);
     }
 
-    public async Task AddJobToScheduler(IJobRequestMessage jobRequestMessage, CancellationToken cancellationToken)
+    public async Task AddJobToScheduler(JobRequest jobRequestMessage, CancellationToken cancellationToken)
     {
         var jobDetail = CreateJobDetail(jobRequestMessage);
         var trigger = CreateTrigger(jobRequestMessage);
@@ -43,18 +43,18 @@ public class QuartzHostedService : BackgroundService, IQuartzService
             await Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken);
     }
 
-    private static IJobDetail CreateJobDetail(IJobRequestMessage jobRequestMessage)
+    private static IJobDetail CreateJobDetail(JobRequest jobRequestMessage)
     {
-        return JobBuilder.Create(jobRequestMessage.Type)
-            .WithIdentity(jobRequestMessage.Id.ToString(), jobRequestMessage.Type.Namespace!)
-            .UsingJobData("ResultsTopic", jobRequestMessage.ResultsTopic)
+        return JobBuilder.Create(jobRequestMessage.JobType)
+            .WithIdentity(jobRequestMessage.JobId.ToString(), jobRequestMessage.JobType.Namespace!)
+            .UsingJobData("ResultsTopic", jobRequestMessage.ResultsTopicName)
             .Build();
     }
 
-    private static ITrigger CreateTrigger(IJobRequestMessage jobRequestMessage)
+    private static ITrigger CreateTrigger(JobRequest jobRequestMessage)
     {
         var triggerBuilder = TriggerBuilder.Create()
-            .WithIdentity($"{jobRequestMessage.Id.ToString()}.trigger", jobRequestMessage.Type.Namespace!)
+            .WithIdentity($"{jobRequestMessage.JobId.ToString()}.trigger", jobRequestMessage.JobType.Namespace!)
             .WithPriority(jobRequestMessage.Priority);
         
         if (jobRequestMessage.CronExpression is null)

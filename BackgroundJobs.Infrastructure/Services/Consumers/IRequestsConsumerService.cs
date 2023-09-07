@@ -2,7 +2,7 @@ using BackgroundJobs.Infrastructure.Model;
 
 namespace BackgroundJobs.Infrastructure.Services.Consumers;
 
-public interface IInputConsumer
+public interface IRequestsConsumerService
 {
     Task<QueueUrl> GetQueueUrlAsync(string queueName,
         CancellationToken cancellationToken = default(CancellationToken));

@@ -23,7 +23,7 @@ public class LambdaToSnsExample
         {
             Task.Delay(delayFiveSeconds);
 
-            var jobProgressMessage = new JobProgressMessage
+            var jobProgressMessage = new JobStatusMessage
             {
                 JobId = Guid.NewGuid(),
                 Message = $"Job number {i}"
