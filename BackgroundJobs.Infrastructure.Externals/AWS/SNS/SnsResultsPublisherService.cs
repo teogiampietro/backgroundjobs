@@ -32,7 +32,7 @@ public class SnsResultsPublisherService : IResultsPublisherService
         var jobResultMessage = new JobResultMessage
         {
             JobId = Guid.Parse(jobId),
-            Status = StatusResults.Ok
+            Result = JobResult.Ok
         };
 
         var topic = await _sns.FindTopicAsync(topicName);

@@ -5,14 +5,12 @@ using Quartz.Spi;
 
 namespace BackgroundJobs.Infrastructure.Services.Quartz;
 
-public class QuartzHostedService : BackgroundService, IQuartzService
+public class JobSchedulerService : BackgroundService, IJobSchedulerService
 {
     private readonly ISchedulerFactory _schedulerFactory;
     private readonly IJobFactory _jobFactory;
 
-    public QuartzHostedService(
-        ISchedulerFactory schedulerFactory,
-        IJobFactory jobFactory)
+    public JobSchedulerService(ISchedulerFactory schedulerFactory, IJobFactory jobFactory)
     {
         _schedulerFactory = schedulerFactory;
         _jobFactory = jobFactory;
