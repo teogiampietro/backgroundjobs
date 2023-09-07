@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundJobs.Infrastructu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundJobs.Infrastructure.Externals", "BackgroundJobs.Infrastructure.Externals\BackgroundJobs.Infrastructure.Externals.csproj", "{93AE5DBC-EF5C-489D-89FE-575C2CD83F80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundJobs.LambdaExample", "BackgroundJobs.LambdaExample\src\BackgroundJobs.LambdaExample\BackgroundJobs.LambdaExample.csproj", "{BFD8EF4C-E861-4440-87D2-A75AE2E67C8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{93AE5DBC-EF5C-489D-89FE-575C2CD83F80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93AE5DBC-EF5C-489D-89FE-575C2CD83F80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93AE5DBC-EF5C-489D-89FE-575C2CD83F80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFD8EF4C-E861-4440-87D2-A75AE2E67C8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFD8EF4C-E861-4440-87D2-A75AE2E67C8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFD8EF4C-E861-4440-87D2-A75AE2E67C8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFD8EF4C-E861-4440-87D2-A75AE2E67C8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -13,17 +13,19 @@ namespace BackgroundJobs.Infrastructure.Externals.AWS.SNS;
 public class SnsPublisher : IOutputResultPublisher
 {
     private readonly AmazonSimpleNotificationServiceClient _sns;
-    
+
     public SnsPublisher(IOptions<AwsSettings> awsSettings)
     {
-        _sns = new AmazonSimpleNotificationServiceClient(awsSettings.Value.AccessKeyId, awsSettings.Value.SecretAccessKey, RegionEndpoint.GetBySystemName(awsSettings.Value.Region));
+        _sns = new AmazonSimpleNotificationServiceClient(awsSettings.Value.AccessKeyId,
+            awsSettings.Value.SecretAccessKey, RegionEndpoint.GetBySystemName(awsSettings.Value.Region));
     }
-    
-    public async Task Publish(IJobExecutionContext context) {
+
+    public async Task Publish(IJobExecutionContext context)
+    {
         var jobId = context.JobDetail.Key.Name;
-        
+
         var jobDataMap = context.MergedJobDataMap;
-        
+
         var topicName = jobDataMap.GetString("ResultsTopic")!;
 
         var jobResultMessage = new JobResultMessage
@@ -33,7 +35,7 @@ public class SnsPublisher : IOutputResultPublisher
         );
 
         var topic = await _sns.FindTopicAsync(topicName);
-        
+
         var publishRequest = new PublishRequest
         {
             TopicArn = topic.TopicArn,
@@ -41,7 +43,8 @@ public class SnsPublisher : IOutputResultPublisher
         };
 
         await _sns.PublishAsync(publishRequest);
-        
-        await Console.Out.WriteLineAsync($"Results for job {context.JobDetail.Key.Name} were published on {topicName}.");
+
+        await Console.Out.WriteLineAsync(
+            $"Results for job {context.JobDetail.Key.Name} were published on {topicName}.");
     }
 }
