@@ -9,11 +9,11 @@ using Message = BackgroundJobs.Infrastructure.Model.Message;
 
 namespace BackgroundJobs.Infrastructure.Externals.AWS.SQS;
 
-public class SqsConsumer : IInputConsumer
+public class SqsRequestsConsumerService : IRequestsConsumerService
 {
     private readonly IAmazonSQS _sqs;
 
-    public SqsConsumer(IOptions<AwsSettings> awsSettings)
+    public SqsRequestsConsumerService(IOptions<AwsSettings> awsSettings)
     {
         _sqs = new AmazonSQSClient(awsSettings.Value.AccessKeyId, awsSettings.Value.SecretAccessKey, RegionEndpoint.GetBySystemName(awsSettings.Value.Region));
     }

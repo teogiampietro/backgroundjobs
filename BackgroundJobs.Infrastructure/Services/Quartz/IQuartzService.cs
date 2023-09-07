@@ -1,8 +1,8 @@
-using BackgroundJobs.Infrastructure.Interfaces;
+using BackgroundJobs.Infrastructure.Model;
 
 namespace BackgroundJobs.Infrastructure.Services.Quartz;
 
 public interface IQuartzService
 {
-    Task AddJobToScheduler(IJobRequestMessage jobRequestMessage, CancellationToken cancellationToken);
+    Task AddJobToScheduler(JobRequest jobRequestMessage, CancellationToken cancellationToken);
 }

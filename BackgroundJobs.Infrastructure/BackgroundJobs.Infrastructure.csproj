@@ -20,7 +20,4 @@
       <None Remove="Publisher\" />
       <None Remove="Messages\" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Services\" />
-    </ItemGroup>
 </Project>

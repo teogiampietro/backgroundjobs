@@ -5,11 +5,11 @@ namespace BackgroundJobs.Infrastructure.Jobs;
 
 public class SlowLoggingJob : IJob
 {
-    private readonly IOutputResultPublisher _publisher;
+    private readonly IResultsPublisherService _resultsPublisherService;
 
-    public SlowLoggingJob(IOutputResultPublisher publisher)
+    public SlowLoggingJob(IResultsPublisherService resultsPublisherService)
     {
-        _publisher = publisher;
+        _resultsPublisherService = resultsPublisherService;
     }
 
     public async Task Execute(IJobExecutionContext context)
@@ -17,7 +17,7 @@ public class SlowLoggingJob : IJob
         // This is a slow job, with 15 seconds of delay.
         await Console.Out.WriteLineAsync($"Job {context.JobDetail.Key.Name} is being executed.");
         await Task.Delay(15000);
-        await _publisher.Publish(context);
+        await _resultsPublisherService.Publish(context);
         await Console.Out.WriteLineAsync($"Job {context.JobDetail.Key.Name} finished.");
     }
 }

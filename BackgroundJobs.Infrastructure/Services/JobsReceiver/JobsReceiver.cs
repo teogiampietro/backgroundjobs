@@ -11,24 +11,24 @@ namespace BackgroundJobs.Infrastructure.Services.JobsReceiver;
 
 public class JobsReceiver : BackgroundService
 {
-    private readonly IInputConsumer _inputConsumer;
+    private readonly IRequestsConsumerService _requestsConsumerService;
     private readonly IQuartzService _quartzService;
-    private readonly string QueueName;
+    private readonly string _queueName;
 
     private readonly List<string> _messageAttributeNames = new() { "All" };
     private readonly List<string> _attributeNames = new() { "All" };
 
-    public JobsReceiver(IInputConsumer inputConsumer, IQuartzService quartzService,
+    public JobsReceiver(IRequestsConsumerService requestsConsumerService, IQuartzService quartzService,
         IOptions<AppSettings> appSettings)
     {
-        _inputConsumer = inputConsumer;
+        _requestsConsumerService = requestsConsumerService;
         _quartzService = quartzService;
-        QueueName = appSettings.Value.InputId;
+        _queueName = appSettings.Value.InputId;
     }
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        var getQueueUrlResponse = await _inputConsumer.GetQueueUrlAsync(QueueName, cancellationToken);
+        var getQueueUrlResponse = await _requestsConsumerService.GetQueueUrlAsync(_queueName, cancellationToken);
         var receiveMessageRequest = new MessageRequest
         {
             QueueUrl = getQueueUrlResponse.QueueUrlName,
@@ -39,7 +39,7 @@ public class JobsReceiver : BackgroundService
         while (!cancellationToken.IsCancellationRequested)
         {
             var receiveMessageResponse =
-                await _inputConsumer.ReceiveMessageAsync(receiveMessageRequest, cancellationToken);
+                await _requestsConsumerService.ReceiveMessageAsync(receiveMessageRequest, cancellationToken);
             if (receiveMessageResponse.HttpStatusCode != HttpStatusCode.OK)
             {
                 Console.WriteLine($"Error receiving messages. {receiveMessageResponse.HttpStatusCode}");
@@ -49,20 +49,20 @@ public class JobsReceiver : BackgroundService
             foreach (var message in receiveMessageResponse.Messages)
             {
                 var jobRequestMessage = JsonSerializer.Deserialize<JobRequestMessage>(message.Body);
-                var jobRequest = new JobRequestMessage
-                (
-                    jobRequestMessage.Id,
-                    Type.GetType($"BackgroundJobs.Infrastructure.Jobs.{jobRequestMessage.TypeName}")!,
-                    jobRequestMessage.ResultsTopic,
-                    jobRequestMessage.Priority,
-                    jobRequestMessage.CronExpression
-                );
+                var jobRequest = new JobRequest
+                {
+                    JobId = jobRequestMessage.JobId,
+                    JobType = Type.GetType($"BackgroundJobs.Infrastructure.Jobs.{jobRequestMessage.JobType}")!,
+                    ResultsTopicName = jobRequestMessage.ResultsTopicName,
+                    CronExpression = jobRequestMessage.CronExpression,
+                    Priority = jobRequestMessage.Priority
+                };
 
-                Console.WriteLine($"Request for job {jobRequest.Id} was received from {QueueName}.");
+                Console.WriteLine($"Request for job {jobRequest.JobId} was received from {_queueName}.");
 
                 await _quartzService.AddJobToScheduler(jobRequest, cancellationToken);
 
-                await _inputConsumer.DeleteMessageAsync(getQueueUrlResponse.QueueUrlName, message.ReceiptHandle,
+                await _requestsConsumerService.DeleteMessageAsync(getQueueUrlResponse.QueueUrlName, message.ReceiptHandle,
                     cancellationToken);
             }
         }

@@ -2,7 +2,9 @@ namespace BackgroundJobs.Infrastructure.Externals.AWS;
 
 public class AwsSettings
 {
-    public string AccessKeyId { get; set; }
-    public string SecretAccessKey { get; set; }
-    public string Region { get; set; }
+    public required string AccessKeyId { get; set; }
+    public required string SecretAccessKey { get; set; }
+    public required string Region { get; set; }
+    public required string StatusQueueName { get; set; }
+    public required string ResultsTopicName { get; set; }
 }

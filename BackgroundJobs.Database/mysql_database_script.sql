@@ -3,7 +3,7 @@
 
 
 # make sure you have UTF-8 collaction for best .NET interoperability
-# CREATE DATABASE quartznet CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+# CREATE DATABASE Quartz CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS QRTZ_FIRED_TRIGGERS;
 DROP TABLE IF EXISTS QRTZ_PAUSED_TRIGGER_GRPS;

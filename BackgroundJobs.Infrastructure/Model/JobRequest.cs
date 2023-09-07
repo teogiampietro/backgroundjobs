@@ -1,9 +1,9 @@
-namespace BackgroundJobs.Infrastructure.Messages;
+namespace BackgroundJobs.Infrastructure.Model;
 
-public record JobRequestMessage
+public class JobRequest
 {
     public required Guid JobId { get; init; }
-    public required string JobType { get; init; }
+    public required Type JobType { get; init; }
     public required string ResultsTopicName { get; init; }
     public string? CronExpression { get; init; }
     public int Priority { get; init; }

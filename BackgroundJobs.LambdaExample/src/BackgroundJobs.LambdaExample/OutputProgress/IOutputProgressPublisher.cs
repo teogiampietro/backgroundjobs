@@ -4,5 +4,5 @@ namespace BackgroundJobs.LambdaExample.OutputProgress;
 
 public interface IOutputProgressPublisher
 {
-    Task Publish(JobProgressMessage jobProgressMessage);
+    Task Publish(JobStatusMessage jobProgressMessage);
 }

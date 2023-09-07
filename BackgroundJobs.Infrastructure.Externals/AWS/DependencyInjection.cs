@@ -15,7 +15,9 @@ public static class DependencyInjection
     {
         services.Configure<AwsSettings>(configuration.GetSection("AwsSettings"));
 
-        services.AddSingleton<IOutputResultPublisher, SnsPublisher>();
-        services.AddSingleton<IInputConsumer, SqsConsumer>();
+        services.AddSingleton<IResultsPublisherService, SnsResultsPublisherService>();
+        services.AddSingleton<IRequestsConsumerService, SqsRequestsConsumerService>();
+
+        services.AddHostedService<SqsStatusConsumerService>();
     }
 }

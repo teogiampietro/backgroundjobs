@@ -8,7 +8,7 @@ public class SnsProgress : IOutputProgressPublisher
 {
     private readonly AmazonSimpleNotificationServiceClient _sns = new();
 
-    public async Task Publish(JobProgressMessage jobProgressMessage)
+    public async Task Publish(JobStatusMessage jobProgressMessage)
     {
         var topic = await _sns.FindTopicAsync("background-jobs-status-topic");
 
