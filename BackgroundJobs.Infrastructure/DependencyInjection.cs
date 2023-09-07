@@ -23,5 +23,6 @@ public static class DependencyInjection
         services.AddHostedService<JobsReceiver>();
         // Add job types as a singleton.
         services.AddSingleton<LoggingJob>();
+        services.AddSingleton<SlowLoggingJob>();
     }
 }
