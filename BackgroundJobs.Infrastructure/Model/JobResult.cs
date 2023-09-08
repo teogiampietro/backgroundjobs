@@ -1,6 +1,6 @@
 namespace BackgroundJobs.Infrastructure.Model;
 
-public enum StatusResults
+public enum JobResult
 {
     Ok,
     CompleteWithErrors,

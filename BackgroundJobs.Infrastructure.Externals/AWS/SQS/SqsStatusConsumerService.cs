@@ -5,11 +5,9 @@ using Amazon.SQS;
 using Amazon.SQS.Model;
 using BackgroundJobs.Infrastructure.Messages;
 using BackgroundJobs.Infrastructure.Model;
-using BackgroundJobs.Infrastructure.Services.Consumers;
 using BackgroundJobs.Infrastructure.Services.Publishers;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Message = BackgroundJobs.Infrastructure.Model.Message;
 
 namespace BackgroundJobs.Infrastructure.Externals.AWS.SQS;
 
@@ -59,8 +57,8 @@ public class SqsStatusConsumerService : BackgroundService
                 var jobResultMessage = new JobResultMessage
                 {
                     JobId = jobStatusMessage.JobId,
-                    Status = StatusResults.Ok,
-                    StatusMessage = jobStatusMessage.Message
+                    Result = JobResult.Ok,
+                    ResultMessage = jobStatusMessage.Message
                 };
 
                 await _resultsPublisherService.Publish(jobResultMessage);

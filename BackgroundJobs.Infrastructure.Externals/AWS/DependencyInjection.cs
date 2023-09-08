@@ -2,7 +2,6 @@ using Amazon;
 using Amazon.SQS;
 using BackgroundJobs.Infrastructure.Externals.AWS.SNS;
 using BackgroundJobs.Infrastructure.Externals.AWS.SQS;
-using BackgroundJobs.Infrastructure.Services.Consumers;
 using BackgroundJobs.Infrastructure.Services.Publishers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,9 +14,9 @@ public static class DependencyInjection
     {
         services.Configure<AwsSettings>(configuration.GetSection("AwsSettings"));
 
-        services.AddSingleton<IResultsPublisherService, SnsResultsPublisherService>();
-        services.AddSingleton<IRequestsConsumerService, SqsRequestsConsumerService>();
-
+        services.AddHostedService<SqsRequestsConsumerService>();
         services.AddHostedService<SqsStatusConsumerService>();
+
+        services.AddSingleton<IResultsPublisherService, SnsResultsPublisherService>();
     }
 }
