@@ -52,12 +52,20 @@ public class SqsRequestsConsumerService : BackgroundService
             {
                 var jobRequestMessage = JsonSerializer.Deserialize<JobRequestMessage>(message.Body);
                 
-                Console.WriteLine($"Request for job {jobRequestMessage.JobId} was received from {_queueName}.");
+                Console.WriteLine($"Request for job {jobRequestMessage!.JobId} was received from {_queueName}.");
+                
+                var jobType = _jobSchedulerService.GetJobType(jobRequestMessage.JobType);
+
+                if (jobType is null)
+                {
+                    Console.WriteLine("Job type is not supported.");
+                    continue;
+                }
                 
                 var jobRequest = new JobRequest
                 {
                     JobId = jobRequestMessage.JobId,
-                    JobType = Type.GetType($"BackgroundJobs.Infrastructure.Jobs.{jobRequestMessage.JobType}")!,
+                    JobType = jobType,
                     ResultsTopicName = jobRequestMessage.ResultsTopicName,
                     CronExpression = jobRequestMessage.CronExpression,
                     Priority = jobRequestMessage.Priority

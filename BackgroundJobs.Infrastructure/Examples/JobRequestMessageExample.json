@@ -2,13 +2,13 @@
   {
     "JobId": "67c8fa3a-5694-47e3-b445-8e19bd678f8f",
     "JobType": "SlowLoggingJob",
-    "ResultsTopic": "background-jobs-results-topic",
+    "ResultsTopicName": "background-jobs-results-topic",
     "Priority": 3
   },
   {
     "JobId": "67c8fa3a-5694-47e3-b445-8e19bd67e3e3",
     "JobType": "LoggingJob",
-    "ResultsTopic": "background-jobs-results-topic",
+    "ResultsTopicName": "background-jobs-results-topic",
     "Priority": 1
   }
 ]

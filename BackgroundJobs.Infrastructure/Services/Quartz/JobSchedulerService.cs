@@ -32,6 +32,11 @@ public class JobSchedulerService : BackgroundService, IJobSchedulerService
             await Scheduler.Shutdown(cancellationToken);
     }
 
+    public Type? GetJobType(string jobTypeName)
+    {
+        return Type.GetType($"BackgroundJobs.Infrastructure.Jobs.{jobTypeName}")!;
+    }
+
     public async Task AddJobToScheduler(JobRequest jobRequestMessage, CancellationToken cancellationToken)
     {
         var jobDetail = CreateJobDetail(jobRequestMessage);
