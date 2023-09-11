@@ -18,24 +18,24 @@ public class LambdaToSnsExample
     public async Task<APIGatewayProxyResponse> Send(APIGatewayProxyRequest request, ILambdaContext context)
     {
         var _sns = new SnsProgress();
-
-        for (var i = 1; i < 3; i++)
+        
+        for (var i = 1; i < 6; i++)
         {
-            Task.Delay(delayFiveSeconds);
+            await Task.Delay(delayFiveSeconds);
 
             var jobProgressMessage = new JobStatusMessage
             {
                 JobId = Guid.NewGuid(),
-                Message = $"Job number {i}"
+                Message = $"Step {i} of 5"
             };
             await _sns.Publish(jobProgressMessage);
-            context.Logger.LogInformation($"Message sent. Job Number {i} | JobId: {jobProgressMessage.JobId}.");
+            context.Logger.LogInformation($"Message sent. Step number {i} | JobId: {jobProgressMessage.JobId}.");
         }
 
         return new APIGatewayProxyResponse
         {
             StatusCode = (int)HttpStatusCode.OK,
-            Body = "All jobs completed successfully.",
+            Body = "Job completed successfully.",
             Headers = new Dictionary<string, string> { { "Content-Type", "text/plain" } }
         };
     }

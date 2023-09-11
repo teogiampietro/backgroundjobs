@@ -52,6 +52,11 @@ public class SnsResultsPublisherService : IResultsPublisherService
     {
         var topic = await _sns.FindTopicAsync(_topicName);
         
+        if (topic is null)
+        {
+            Console.WriteLine("Topic not found");
+            return;
+        }
         var publishRequest = new PublishRequest
         {
             TopicArn = topic.TopicArn,

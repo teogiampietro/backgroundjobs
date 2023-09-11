@@ -22,5 +22,6 @@ public static class DependencyInjection
         // Add job types as a singleton.
         services.AddSingleton<LoggingJob>();
         services.AddSingleton<SlowLoggingJob>();
+        services.AddSingleton<LambdaJob>();
     }
 }

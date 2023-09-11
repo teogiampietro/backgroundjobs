@@ -10,6 +10,12 @@
     "JobType": "LoggingJob",
     "ResultsTopicName": "background-jobs-results-topic",
     "Priority": 1
+  },
+  {
+    "JobId": "67c8fa3a-5694-47e3-b445-8e19bd67d1d1",
+    "JobType": "LambdaJob",
+    "ResultsTopicName": "background-jobs-results-topic",
+    "Priority": 2
   }
 ]
 
