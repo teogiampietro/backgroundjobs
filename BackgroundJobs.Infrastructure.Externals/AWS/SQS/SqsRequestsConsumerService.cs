@@ -50,9 +50,19 @@ public class SqsRequestsConsumerService : BackgroundService
             
             foreach (var message in receiveMessageResponse.Messages)
             {
-                var jobRequestMessage = JsonSerializer.Deserialize<JobRequestMessage>(message.Body);
+                JobRequestMessage jobRequestMessage;
                 
-                Console.WriteLine($"Request for job {jobRequestMessage!.JobId} was received from {_queueName}.");
+                try
+                {
+                    jobRequestMessage = JsonSerializer.Deserialize<JobRequestMessage>(message.Body)!;
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine($"An error occurred. Exception message: {exception.Message}");
+                    continue;
+                }
+                
+                Console.WriteLine($"Request for job {jobRequestMessage.JobId} was received from {_queueName}.");
                 
                 var jobType = _jobSchedulerService.GetJobType(jobRequestMessage.JobType);
 

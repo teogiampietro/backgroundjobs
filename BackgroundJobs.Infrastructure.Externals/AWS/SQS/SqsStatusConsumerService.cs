@@ -50,10 +50,20 @@ public class SqsStatusConsumerService : BackgroundService
             
             foreach (var message in receiveMessageResponse.Messages)
             {
-                var jobStatusMessage = JsonSerializer.Deserialize<JobStatusMessage>(message.Body);
+                JobStatusMessage jobStatusMessage;
+                
+                try
+                {
+                    jobStatusMessage = JsonSerializer.Deserialize<JobStatusMessage>(message.Body)!;
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine($"An error occurred. Exception message: {exception.Message}");
+                    continue;
+                }
 
                 Console.WriteLine($"Status for job {jobStatusMessage.JobId} was received from {_queueName} with message {jobStatusMessage.Message}.");
-
+                
                 var jobResultMessage = new JobResultMessage
                 {
                     JobId = jobStatusMessage.JobId,
