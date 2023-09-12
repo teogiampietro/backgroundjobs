@@ -46,18 +46,35 @@ public class JobSchedulerService : BackgroundService, IJobSchedulerService
             await Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken);
     }
 
+    public async Task RerunJobFromScheduler(Guid jobId, CancellationToken cancellationToken)
+    {
+        var jobKey = new JobKey(jobId.ToString());
+        
+        if (Scheduler is not null)
+            await Scheduler.TriggerJob(jobKey, cancellationToken);
+    }
+
+    public async Task DeleteJobFromScheduler(Guid jobId, CancellationToken cancellationToken)
+    {
+        var jobKey = new JobKey(jobId.ToString());
+        
+        if (Scheduler is not null)
+            await Scheduler.DeleteJob(jobKey, cancellationToken);
+    }
+
     private static IJobDetail CreateJobDetail(JobRequest jobRequestMessage)
     {
         return JobBuilder.Create(jobRequestMessage.JobType)
-            .WithIdentity(jobRequestMessage.JobId.ToString(), jobRequestMessage.JobType.Namespace!)
+            .WithIdentity(jobRequestMessage.JobId.ToString())
             .UsingJobData("ResultsTopic", jobRequestMessage.ResultsTopicName)
+            .StoreDurably(true)
             .Build();
     }
 
     private static ITrigger CreateTrigger(JobRequest jobRequestMessage)
     {
         var triggerBuilder = TriggerBuilder.Create()
-            .WithIdentity($"{jobRequestMessage.JobId.ToString()}.trigger", jobRequestMessage.JobType.Namespace!)
+            .WithIdentity($"{jobRequestMessage.JobId.ToString()}.trigger")
             .WithPriority(jobRequestMessage.Priority);
         
         if (jobRequestMessage.CronExpression is null)
