@@ -3,7 +3,7 @@ using Quartz;
 
 namespace BackgroundJobs.Infrastructure.Jobs;
 
-public class LambdaJob : IJob
+public class LambdaJob : JobBase
 {
     private readonly HttpClient _httpClient;
 
@@ -16,7 +16,7 @@ public class LambdaJob : IJob
             { BaseAddress = new Uri("https://zy4si9954h.execute-api.us-east-2.amazonaws.com/default/") };
     }
 
-    public async Task Execute(IJobExecutionContext context)
+    protected override async Task ExecuteJob(IJobExecutionContext context)
     {
         await _httpClient.GetAsync("LambdaToSnsExample");
         await _resultsPublisherService.Publish(context);

@@ -3,7 +3,7 @@ using Quartz;
 
 namespace BackgroundJobs.Infrastructure.Jobs;
 
-public class SlowLoggingJob : IJob
+public class SlowLoggingJob : JobBase
 {
     private readonly IResultsPublisherService _resultsPublisherService;
 
@@ -12,7 +12,7 @@ public class SlowLoggingJob : IJob
         _resultsPublisherService = resultsPublisherService;
     }
 
-    public async Task Execute(IJobExecutionContext context)
+    protected override async Task ExecuteJob(IJobExecutionContext context)
     {
         // This is a slow job, with 15 seconds of delay.
         await Console.Out.WriteLineAsync($"Job {context.JobDetail.Key.Name} is being executed.");
@@ -20,4 +20,5 @@ public class SlowLoggingJob : IJob
         await _resultsPublisherService.Publish(context);
         await Console.Out.WriteLineAsync($"Job {context.JobDetail.Key.Name} finished.");
     }
+
 }
