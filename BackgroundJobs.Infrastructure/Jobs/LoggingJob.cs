@@ -3,14 +3,16 @@ using Quartz;
 
 namespace BackgroundJobs.Infrastructure.Jobs;
 
-public class LoggingJob : IJob
+public class LoggingJob : JobBase
 {
     private readonly IResultsPublisherService _resultsPublisherService;
+
     public LoggingJob(IResultsPublisherService resultsPublisherService)
     {
         _resultsPublisherService = resultsPublisherService;
     }
-    public async Task Execute(IJobExecutionContext context)
+
+    protected override async Task ExecuteJob(IJobExecutionContext context)
     {
         // This is a fast job, without delay.
         await Console.Out.WriteLineAsync($"Job {context.JobDetail.Key.Name} is being executed.");
